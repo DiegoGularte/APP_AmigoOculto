@@ -87,6 +87,7 @@ public class FormularioActivity extends AppCompatActivity {
                 finish();
             }else{
                 ClienteDAO.editar(this, cliente);
+                finish();
             }
 
         }

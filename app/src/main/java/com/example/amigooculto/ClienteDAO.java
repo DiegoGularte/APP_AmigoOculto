@@ -57,6 +57,8 @@ public class ClienteDAO {
 
     }
 
+
+
     public static List<Cliente> getClientes(Context context){
         List<Cliente> lista = new ArrayList<>();
 
