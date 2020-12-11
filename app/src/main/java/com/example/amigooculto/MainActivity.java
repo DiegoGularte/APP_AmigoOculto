@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private  void excluir(final Cliente clienteSelec){
         AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-        alerta.setTitle("Excluir Cliente");
-        alerta.setMessage("Deseja excluir o cliente selecionado: "  );
+        alerta.setTitle("Excluir Participante");
+        alerta.setMessage("Deseja excluir o participante selecionado: "  );
         alerta.setNeutralButton("cancelar", null);
         alerta.setPositiveButton("confirmar", new DialogInterface.OnClickListener() {
             @Override

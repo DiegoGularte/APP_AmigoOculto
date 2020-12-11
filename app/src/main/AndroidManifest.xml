@@ -9,13 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AmigoOculto">
-        <activity android:name=".InicialActivity"></activity>
-        <activity android:name=".ExportaLista">
+        <activity android:name=".InicialActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ExportaLista">
+
         </activity>
         <activity android:name=".FormularioActivity" />
         <activity

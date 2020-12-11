@@ -40,7 +40,7 @@ public class ExportaLista extends AppCompatActivity {
             public void onClick(View v) {
                 sortear(ClienteDAO.getClientes( ExportaLista.this ));
                 tvAmigo.setText("Sorteio Realizado");
-                tvAmigoEnviar.setText("Pressione o botão próximo para começar a enviar");
+                tvAmigoEnviar.setText("Clique o botão 'próximo'");
             }
         });
 
@@ -61,6 +61,7 @@ public class ExportaLista extends AppCompatActivity {
         btnIncluir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                tvAmigoEnviar.setText("Clique no botão Sortear");
                 Intent intent = new Intent(ExportaLista.this, MainActivity.class);
                 startActivity(intent);
             }
