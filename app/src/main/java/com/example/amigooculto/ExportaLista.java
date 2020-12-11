@@ -23,7 +23,7 @@ public class ExportaLista extends AppCompatActivity {
     TextView tvAmigoEnviar;
      int posicaoLista = 0;
     Cliente cliente;
-
+    String dicaPresente ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +40,21 @@ public class ExportaLista extends AppCompatActivity {
             public void onClick(View v) {
                 sortear(ClienteDAO.getClientes( ExportaLista.this ));
                 tvAmigo.setText("Sorteio Realizado");
+                tvAmigoEnviar.setText("Pressione o botão próximo para começar a enviar");
             }
         });
 
         btnProximoA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                cliente = proximoAmigo();
                tvAmigoEnviar.setText("Envie o amigo oculto para " + cliente.getNome()  );
 
+                /*dicaPresente = presenteAmigo();
+
+                tvAmigoEnviar.setText( cliente.getNome()+ " Você pegou :"+ cliente.getAmigoOculto() +
+                        " Sugestão de Presente: " + dicaPresente);*/
             }
         });
 
@@ -65,21 +71,12 @@ public class ExportaLista extends AppCompatActivity {
 
     public  void exportCSV(View view){
 
-        //geração do dados dos Clientes para exportacao
-       // List<Cliente> lista = ClienteDAO.getClientes(this);
+
+        dicaPresente = presenteAmigo();
         StringBuilder data = new StringBuilder();
-        data.append( cliente.getNome()+ " Você pegou :"+ cliente.getAmigoOculto() + "\n" +
-        " Sugestão de Presente" + cliente.getDicaPresente());
-       /* data.append("nome"  + ","
-                + "cpf" + ","
-                + "telefone" + ","
-                + "cep" + ","
-                + "ativo" + "\n");*/
-      /*  for(Cliente obj : lista) {
-            data.append(  obj.getAmigoOculto() + ","
-                    + obj.getNome() + "\n" );
-        }*/
-        //saving the file into device
+        data.append( cliente.getNome() + " Voce pegou: "+  cliente.getAmigoOculto()  + "\n" +
+        " Sugestao de Presente: " + dicaPresente + "\n");
+
         try{
             FileOutputStream out = openFileOutput("data.csv", Context.MODE_PRIVATE);
             out.write((data.toString()).getBytes());
@@ -117,9 +114,25 @@ public class ExportaLista extends AppCompatActivity {
         return clientes.get(posicaoLista);
     }
 
+    public String presenteAmigo(){
+        List<Cliente> clientes= ClienteDAO.getClientes(this);
+        Cliente cliente = clientes.get(posicaoLista);
+        String amigoOculto = cliente.getAmigoOculto();
+        for(Cliente obj: clientes) {
+            if (obj.getNome().equals(amigoOculto)) {
+                return obj.getDicaPresente();
+            }
+
+        }
+        return "erro";
+    }
+
+
     public void sortear(List<Cliente> lista){
+
          Cliente cliente = new Cliente();
         int tamanhoLista = lista.size();
+        if(lista.size() > 2) {
        // List<Cliente> ListaFInal = new ArrayList<>();
         List<String> listaNomes = new ArrayList<>();
 
@@ -128,23 +141,38 @@ public class ExportaLista extends AppCompatActivity {
             listaNomes.add(obj.getNome());
         }
 
-
         Random random = new Random();
         int i=0;
-        while ( i < lista.size()){
-            Cliente obj = lista.get(i);
-            int indexRandom = random.nextInt(listaNomes.size());
-            String nomeOculto = listaNomes.get(indexRandom);
-           if(!nomeOculto.equals(obj.getNome())) {
-               obj.setAmigoOculto(nomeOculto);
-               ClienteDAO.editar(ExportaLista.this, obj);
-               listaNomes.remove(indexRandom);
-               i++;
-           }else if(i+1 == lista.size()){
-               //tratar bug
-               i++;
-           }
-        }
 
+        //percorre a lista para adicionar o amigo oculto
+
+
+            while (i < lista.size()) {//9 10
+                Cliente obj = lista.get(i);
+                int indexRandom = random.nextInt(listaNomes.size());
+                String nomeOculto = listaNomes.get(indexRandom);
+                //caso o participante receba seu proprio nome não recebe o amigo oculto e inicia outra tentativa
+                if (!nomeOculto.equals(obj.getNome())) {
+                    obj.setAmigoOculto(nomeOculto);
+                    ClienteDAO.editar(ExportaLista.this, obj);
+                    listaNomes.remove(indexRandom);
+                    i++;
+                    //caso o ultimo amigo oculto seja o proprio participante, trocasse o amigo oculto com o anterior
+                } else if (i + 1 == lista.size()) { // testa se é o ultimo
+
+                        String troca = obj.getAmigoOculto();
+                        Cliente cliente1 = lista.get(i-1);
+                        obj.setAmigoOculto(cliente1.getAmigoOculto());
+                    ClienteDAO.editar(ExportaLista.this, cliente1);
+                        obj.setAmigoOculto(troca);
+                    ClienteDAO.editar(ExportaLista.this, obj);
+
+                        i++;
+
+
+                }
+            }
+
+        }
     }
 }
